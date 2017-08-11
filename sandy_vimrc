@@ -58,7 +58,7 @@ set encoding=utf-8
 "自动判断编码时 依次尝试一下编码
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 "检测文件类型
-filetype on
+filetype off
 "针对不同的文件采用不同的缩进方式
 filetype indent on
 "允许插件
@@ -66,16 +66,9 @@ filetype plugin on
 "启动智能补全
 filetype plugin indent on
 "Vim插件安装在runtimepath目录下
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim
+set runtimepath^=~/.vim/bundle/ctrlp.vim
 call vundle#rc()
-"使用Vundle来管理Vundle
-"Python函数wiki文档
-"Bundle 'pydoc.vim'
-"Bundle 'xptemplate'
-"Bundle 'vim-airline'
-"Bundle 'vim-startify'
-"Bundle 'vim-nerdtree'
-"Bundle 'vim-YouCompleteMe'
 "YCM设置
 " 关闭加载.ycm_extra_conf.py提示
 let g:ycm_confirm_extra_conf=0
@@ -91,6 +84,13 @@ let g:ycm_collect_identifiers_from_comments_and_strings=1
 "语言关键字补全, 不过python关键字都很短，所以，需要的自己打开
 let g:ycm_seed_identifiers_with_syntax=1
 let g:ycm_collect_identifiers_from_tags_files = 1
+"内容搜索：ag.vim
+let g:ag_prg="<c-q> --vimgrep"
+"设置文件跳转
+let g:ctrlp_map = '<c-p>' 
+let g:ctrlp_cmd = 'CtrlP'
+" 设置过滤不进行查找的后缀名 
+" let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|pyc)$' 
 "映射map保存并退出
 map <F1> :wq!<CR>
 "设定折叠方式
@@ -99,16 +99,47 @@ map <F1> :wq!<CR>
 autocmd vimenter * NERDTree
 "映射NERDTREE
 map <F2> :NERDTreeToggle<CR>
+Bundle 'tagbar'
 "ctags tag-bar
-nmap <F8> :TagbarToggle<CR>
+map <F3> :TagbarToggle<CR>
+"启动时自动focus
+let g:tagbar_autofocus=1
 "从第2个键入字符就开始罗列匹配项
 let g:ycm_min_num_of_chars_for_completion=2
 let g:ycm_global_ycm_extra_conf = "~/.vim/bundle/vim-YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
 nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
-"Bundle 'vim-repeat'
-"Bundle 'xptemplate'
+execute pathogen#infect()
+Bundle 'syntastic'
+" Syntastic ------------------------------
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+ " show list of errors and warnings on the current file
+ nmap <leader>e :Errors<CR>
+ " turn to next or previous errors, after open errors list
+ nmap <leader>n :lnext<CR>
+ nmap <leader>p :lprevious<CR>
+ " check also when just opened the file
+ let g:syntastic_check_on_open = 1
+ " syntastic checker for javascript.
+ " eslint is the only tool support JSX.
+ " If you don't need write JSX, you can use jshint.
+ " And eslint is slow, but not a hindrance
+ " let g:syntastic_javascript_checkers = ['jshint']
+ let g:syntastic_javascript_checkers = ['eslint']
+ " don't put icons on the sign column (it hides the vcs status icons of signify)
+ let g:syntastic_enable_signs = 0
+ " custom icons (enable them if you use a patched font, and enable the previous setting)
+ let g:syntastic_error_symbol = '✗'
+ let g:syntastic_warning_symbol = '⚠'
+ let g:syntastic_style_error_symbol = '✗'
+ let g:syntastic_style_warning_symbol = '⚠'
 Bundle 'DoxygenToolkit.vim'
 let g:DoxygenToolkit_authorName="\tURNAME"
 let g:DoxygenToolkit_briefTag_pre = "@brief\t"
@@ -137,7 +168,7 @@ func SetTitle()
 	if &filetype == 'sh' 
 		call setline(1, "\#!/bin/bash") 
 		call append(1, "\#########################################################################") 
-		call append(2, "\# Author: (".$USER."@gmail.com)") 
+		call append(2, "\# Author: (".$USER."@.com)") 
 		call append(3, "\# Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
 		call append(4, "\# File Name: ".expand("%")) 
 		call append(5, "\# Description: ")
@@ -149,7 +180,7 @@ func SetTitle()
 	elseif &filetype == 'php'
 		call setline(1, "<?php") 
 		call append(1, "\#########################################################################") 
-		call append(2, "\# Author: (".$USER."@gmail.com)") 
+		call append(2, "\# Author: (".$USER."@github.com)") 
 		call append(3, "\# Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
 		call append(4, "\# File Name: ".expand("%")) 
 		call append(5, "\# Description: ")
@@ -162,7 +193,7 @@ func SetTitle()
 		call setline(1, "\#!/usr/bin/env python")
 		call append(1, "\#-*- coding: utf-8 -*-")
 		call append(2, "\#########################################################################")
-		call append(2, "\# Author: (".$USER."@gmail.com)") 
+		call append(2, "\# Author: (".$USER."@github.com)") 
 		call append(4, "\# Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
 		call append(5, "\# File Name: ".expand("%")) 
 		call append(6, "\# Description: ")
@@ -171,7 +202,7 @@ func SetTitle()
 		call append(9, "\# vim: set noexpandtab ts=4 sts=4 sw=4 :")
 	elseif &filetype == 'go'
 		call setline(1, "\//######################################################################")
-		call append(1, "\// Author: (".$USER."@gmail.com)") 
+		call append(1, "\// Author: (".$USER."@github.com)") 
 		call append(2, "\// Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
 		call append(3, "\// File Name: ".expand("%")) 
 		call append(4, "\// Description: ")
@@ -180,7 +211,7 @@ func SetTitle()
 		call append(7, "\// vim: set noexpandtab ts=4 sts=4 sw=4 :")
 	elseif &filetype == 'java'
 		call setline(1, "\//######################################################################")
-		call append(1, "\// Author: (".$USER."@gmail.com)") 
+		call append(1, "\// Author: (".$USER."@github.com)") 
 		call append(2, "\// Created Time: ".strftime("%Y-%m-%d %H:%M:%S"))
 		call append(3, "\// File Name: ".expand("%")) 
 		call append(4, "\// Description: ")
@@ -202,10 +233,13 @@ Bundle 'pydoc.vim'
 Bundle 'xptemplate'
 Bundle 'vim-airline'
 Bundle 'vim-startify'
-Bundle 'vim-nerdtree'
+Bundle 'nerdtree'
 Bundle 'vim-YouCompleteMe'
 
 
 "打开vim后自动开启目录
-"autocmd vimenter * NERDTree
+autocmd vimenter * NERDTree
 map <C-n> :NERDTreeToggle<CR>
+set runtimepath^=~/.vim/bundle/ag
+set runtimepath^=~/.vim/bundle/tarbar
+let g:vim_markdown_frontmatter=1
